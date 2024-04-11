@@ -5,7 +5,7 @@ import io.netty.buffer.Unpooled;
 import net.elidhan.anim_guns.AnimatedGuns;
 import net.elidhan.anim_guns.item.BlueprintItem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
@@ -66,20 +66,20 @@ public class BlueprintScreen extends HandledScreen<BlueprintScreenHandler>
     }
 
     @Override
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY)
-    {
-
+    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+        super.drawForeground(matrices, mouseX, mouseY);
     }
 
     @Override
-    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, TEXTURE);
         int i = this.x;
         int j = (this.height - this.backgroundHeight) / 2;
 
-        context.drawTexture(TEXTURE, i, j, 0, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, 256, 256);
+        Screen.drawTexture(matrices, i, j, 0, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     private int getCurrentBlueprint()
@@ -88,9 +88,9 @@ public class BlueprintScreen extends HandledScreen<BlueprintScreenHandler>
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
-        super.render(context, mouseX, mouseY, delta);
-        context.drawItem(new ItemStack(BlueprintItem.BLUEPRINT_ITEM_LIST.get(getCurrentBlueprint())), 43+(this.width - this.backgroundWidth)/2, 26+(this.height - this.backgroundHeight)/2);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderBackground(matrices);
+        super.render(matrices, mouseX, mouseY, delta);
+        this.itemRenderer.renderGuiItemIcon(matrices,new ItemStack(BlueprintItem.BLUEPRINT_ITEM_LIST.get(getCurrentBlueprint())), 43+(this.width - this.backgroundWidth)/2, 26+(this.height - this.backgroundHeight)/2);
     }
 }

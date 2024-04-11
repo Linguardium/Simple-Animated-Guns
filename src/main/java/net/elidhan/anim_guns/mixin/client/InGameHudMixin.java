@@ -8,9 +8,9 @@ import net.elidhan.anim_guns.mixininterface.InGameHudMixinInterface;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.*;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.objectweb.asm.Opcodes;
@@ -88,7 +88,7 @@ public abstract class InGameHudMixin implements InGameHudMixinInterface
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void render(DrawContext context, float tickDelta, CallbackInfo ci)
+    private void render(MatrixStack matrixStack, float tickDelta, CallbackInfo ci)
     {
         this.scaledWidth = this.client.getWindow().getScaledWidth();
         this.scaledHeight = this.client.getWindow().getScaledHeight();
@@ -122,7 +122,7 @@ public abstract class InGameHudMixin implements InGameHudMixinInterface
     }
 
     @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
-    private void cancelCrosshair(DrawContext context, CallbackInfo ci)
+    private void cancelCrosshair(MatrixStack matrices, CallbackInfo ci)
     {
         if(client.player != null
                 && client.player.getMainHandStack().getItem() instanceof GunItem
