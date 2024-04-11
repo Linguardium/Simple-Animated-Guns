@@ -44,7 +44,7 @@ public class AnimatedGuns implements ModInitializer {
     public static final Identifier GUN_SPRINT_PACKET_ID = new Identifier(AnimatedGuns.MOD_ID, "sprint");
     public static final Identifier PLAY_ANIMATION_PACKET_ID = new Identifier(AnimatedGuns.MOD_ID, "play_animation");
 
-    public static final ItemGroup MISC = FabricItemGroup.builder().icon(() -> new ItemStack(ModItems.MAGNUM_REVOLVER_BLUEPRINT)).entries((displayContext, entries) -> {
+    public static final ItemGroup MISC = FabricItemGroup.builder(new Identifier(MOD_ID, "anim_guns.misc")).icon(() -> new ItemStack(ModItems.MAGNUM_REVOLVER_BLUEPRINT)).entries((displayContext, entries) -> {
         entries.add(new ItemStack(ModItems.HARDENED_IRON_INGOT));
         entries.add(new ItemStack(ModItems.HARDENED_IRON_NUGGET));
         entries.add(new ItemStack(ModItems.PLASTIC));
@@ -89,7 +89,7 @@ public class AnimatedGuns implements ModInitializer {
         entries.add(new ItemStack(ModItems.HEAVY_RIFLE_BULLET));
         entries.add(new ItemStack(ModItems.SHOTGUN_SHELL));
     }).displayName(Text.translatable("misc")).build();
-    public static final ItemGroup GUNS = FabricItemGroup.builder().icon(() -> new ItemStack(ModItems.MAGNUM_REVOLVER)).entries((displayContext, entries) -> {
+    public static final ItemGroup GUNS = FabricItemGroup.builder(new Identifier(MOD_ID, "anim_guns.guns")).icon(() -> new ItemStack(ModItems.MAGNUM_REVOLVER)).entries((displayContext, entries) -> {
         entries.add(new ItemStack(ModItems.PISTOL));
         entries.add(new ItemStack(ModItems.HEAVY_PISTOL));
         entries.add(new ItemStack(ModItems.MAGNUM_REVOLVER));
@@ -124,8 +124,8 @@ public class AnimatedGuns implements ModInitializer {
         ModSounds.registerSounds();
         GunAttributes.registerAttributes();
 
-        Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "anim_guns.misc"), MISC);
-        Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "anim_guns.guns"), GUNS);
+//        Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "anim_guns.misc"), MISC);
+//        Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "anim_guns.guns"), GUNS);
 
         ServerPlayNetworking.registerGlobalReceiver(RELOAD_PACKET_ID, (server, player, serverPlayNetworkHandler, buf, packetSender) ->
         {
@@ -186,8 +186,8 @@ public class AnimatedGuns implements ModInitializer {
             ItemStack stack = buf.readItemStack();
 
             if (stack.getItem() instanceof GunItem) {
-                if (player.getWorld() instanceof ServerWorld serverWorld) {
-                    ((GunItem) stack.getItem()).toggleSprint(stack, buf.readBoolean(), serverWorld, player);
+                if (player.getWorld() != null) {
+                    ((GunItem) stack.getItem()).toggleSprint(stack, buf.readBoolean(), player.getWorld(), player);
                 }
             }
         });
